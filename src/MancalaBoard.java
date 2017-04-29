@@ -11,16 +11,18 @@ import java.util.*;
  */
 public class MancalaBoard
 {
-	private DrawableStyle ds;
 	private int stoneCount;
-	private ArrayList<Pit> pits;
-	private ArrayList<ChangeListener> clist;
 	private boolean isP1;
 	
+	private DrawableStyle ds;
+	
+	private ArrayList<Pit> pits;
+	private ArrayList<ChangeListener> clist;
+
 	final static int PIT_COUNT = 14;
 	
 	/**
-	 * Constructs a Mancala Board with the starting stones
+	 * Constructs a MancalaBoard with the starting stones
 	 * @param stones the starting amount of stones in each pit
 	 */
 	public MancalaBoard(int stones)
@@ -39,7 +41,7 @@ public class MancalaBoard
 	}
 	
 	/**
-	 * Constructs an empty Mancala Board
+	 * Constructs an empty MancalaBoard
 	 */
 	public MancalaBoard()
 	{
@@ -53,6 +55,7 @@ public class MancalaBoard
 				pits.add(new Pit(stoneCount));
 		}
 		this.clist = new ArrayList<ChangeListener>();
+		this.ds = null;
 		this.isP1 = true; //Starts the game with player 1
 	}
 	
@@ -88,7 +91,7 @@ public class MancalaBoard
 	}
 	
 	/**
-	 * Gets the Mancala Board's starting stone count
+	 * Gets the MancalaBoard's starting stone count
 	 * @return the starting stone count
 	 */
 	public int getStoneCount()
@@ -101,7 +104,9 @@ public class MancalaBoard
 	 * @return the style name
 	 */
 	public String getStyle()
-	{
+	{	
+		if(ds == null)
+			return null;
 		return ds.getStyleName();
 	}
 	
@@ -115,7 +120,7 @@ public class MancalaBoard
 	}
 	
 	/**
-	 * Draws the Mancala Board using the current DrawableStyle
+	 * Draws the MancalaBoard using the current DrawableStyle
 	 * @param g2 Graphics2D
 	 */
 	public void draw(Graphics2D g2)
@@ -142,23 +147,26 @@ public class MancalaBoard
 		int startPitScore = startPit.getStones();
 		startPit.setEmpty();
 		
-		for(int i = startPitScore; i >= 0; i--)
+		int currentInd = pitInd+1;
+		for(int i = startPitScore; i > 0; i--)
 		{
-			pits.get(++pitInd).addStones(1);
-			if(i == 0 && pits.get(pitInd).isEmpty())
+			//System.out.println(currentInd + " | " + pits.get(currentInd).isEmpty() + " | " + i);
+			if(i == 1 && pits.get(currentInd).isEmpty() && currentInd != 6 && currentInd != 13)
 			{
-				Pit acrossPit = getAcross(pitInd);
-				if(isP1)
+				Pit acrossPit = getAcross(currentInd);
+				if(isP1) //Adds across score to P1's pit
 				{
 					pits.get(6).addStones(acrossPit.getStones());
 					acrossPit.setEmpty();
 				}
-				else
+				else //Adds across score to P2's pit
 				{
 					pits.get(13).addStones(acrossPit.getStones());
 					acrossPit.setEmpty();
 				}
 			}
+			pits.get(currentInd).addStones(1);
+			currentInd++;
 		}
 		
 		for(ChangeListener c : clist)
@@ -168,6 +176,13 @@ public class MancalaBoard
 	}
 	
 	/**
+	 * Changes the current player
+	 */
+	public void changePlayer()
+	{
+		this.isP1 = !isP1;
+	}
+	/**
 	 * Helper method that returns the pit across from the given pit
 	 * @param pitInd The index of the given pit
 	 * @return The Pit across
@@ -175,5 +190,14 @@ public class MancalaBoard
 	public Pit getAcross(int pitInd)
 	{
 		return pits.get(2*6 - pitInd);
+	}
+	
+	/**
+	 * Gets the pits
+	 * @return the pits
+	 */
+	public ArrayList<Pit> getPits()
+	{
+		return pits;
 	}
 }

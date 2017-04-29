@@ -16,7 +16,10 @@ public class Pit
 	public Pit(int stones)
 	{
 		this.stones = stones;
-		this.isEmpty = false;
+		if(stones > 0)
+			this.isEmpty = false;
+		else
+			this.isEmpty = true;
 		this.isPlayerPit = false;
 	}
 	
