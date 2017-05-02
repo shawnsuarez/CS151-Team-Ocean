@@ -39,11 +39,8 @@ public class MancalaPanel extends JPanel
 	
 	public void paintComponent(Graphics g)
 	{
-		//super.paintComponent(g);
-		//Rectangle2D.Double test = new Rectangle2D.Double(0,0, 200, 200);
 		Graphics2D g2 = (Graphics2D)g;
 		if(ds != null)
 			ds.draw(g2);
-		//g2.draw(test);
 	}
 }

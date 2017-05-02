@@ -22,12 +22,20 @@ public class MancalaFrame extends JFrame
 		MancalaBoard mb = new MancalaBoard(0);
 		MancalaPanel mp = new MancalaPanel(mb);
 
-		JPanel mancalaButtons = new JPanel();
+		//North Text Panel
+		JLabel mancalaTextLabel = new JLabel();
+		mancalaTextLabel.setText("Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score());
+		JPanel mancalaTextPanel = new JPanel();
+		mancalaTextLabel.setLayout(new BorderLayout());
+		mancalaTextPanel.add(mancalaTextLabel, BorderLayout.CENTER);
 		
+		//South Button Panel
+		JPanel mancalaButtons = new JPanel();
 		JButton endTurnButton = new JButton("End Turn");
 		JButton undoButton = new JButton("Undo");
 		JButton settingsButton = new JButton("Settings");
 		
+		//Adds tool tips for buttons
 		endTurnButton.setToolTipText("<html>Ends the current player's turn.</html>");
 		undoButton.setToolTipText("<html>Undo current move.</html>");
 		settingsButton.setToolTipText("<html>Opens settings menu.</html>");
@@ -35,6 +43,7 @@ public class MancalaFrame extends JFrame
 		//Beginning of settings Frame
 		JPanel settingPanel = new JPanel();
 		
+		//Creates Combo Boxes for settings
 		String[] styleChoice = { "Simple", "Fancy" };
 		JComboBox styles = new JComboBox(styleChoice);
 		styles.setToolTipText("<html>Changes the look of the mancala board</html>");
@@ -67,7 +76,6 @@ public class MancalaFrame extends JFrame
 		JFrame settingFrame = new JFrame();
 		settingFrame.setSize(200, 150);
 		settingFrame.add(settingPanel);
-
 		settingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		//Settings Close Button - applies any changed settings
@@ -106,12 +114,14 @@ public class MancalaFrame extends JFrame
 			}
 		});
 
-		//Changes player
+		//Changes player and updates score
 		endTurnButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("End Turn");
+				mb.changePlayer();
+				mancalaTextPanel.repaint();
 			}
 		});
 		
@@ -161,11 +171,12 @@ public class MancalaFrame extends JFrame
 		
 		//JLabel mancalaLabel = new MancalaLabel(mb);
 		
+		add(mancalaTextPanel, BorderLayout.NORTH);
 		add(mp, BorderLayout.CENTER);
 		add(mancalaButtons, BorderLayout.SOUTH);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		pack();
+		//pack();
 		setVisible(true);
 		
 		//Initial game startup

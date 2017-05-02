@@ -57,21 +57,9 @@ public class MancalaBoard
 				pits.add(new Pit(stoneCount));
 		}
 		this.clist = new ArrayList<ChangeListener>();
-		//this.ds = null;
 		this.isP1 = true; //Starts the game with player 1
 		this.oldMovePits = pits; //Initial copy of pits for undo function
 	}
-	
-//	/**
-//	 * Constructs a MancalaBoard with starting stones and a DrawableStyle
-//	 * @param stones The starting amount of stones
-//	 * @param ds The starting DrawableStyle
-//	 */
-//	public MancalaBoard(int stones, DrawableStyle ds)
-//	{
-//		this(stones);
-//		this.ds = ds;
-//	}
 	
 	/**
 	 * Sets the new starting stone count, effectively restarting the game
@@ -102,35 +90,6 @@ public class MancalaBoard
 	{
 		return stoneCount;
 	}
-	
-//	/**
-//	 * Gets the name of the style being used
-//	 * @return the style name
-//	 */
-//	public String getStyle()
-//	{	
-//		if(ds == null)
-//			return null;
-//		return ds.getStyleName();
-//	}
-	
-//	/**
-//	 * Sets the board's style
-//	 * @param ds
-//	 */
-//	public void setStyle(DrawableStyle ds)
-//	{
-//		this.ds = ds;
-//	}
-	
-//	/**
-//	 * Draws the MancalaBoard using the current DrawableStyle
-//	 * @param g2 Graphics2D
-//	 */
-//	public void draw(Graphics2D g2)
-//	{
-//		ds.draw(g2);
-//	}
 	
 	/**
 	 * Attaches change listener
@@ -195,6 +154,17 @@ public class MancalaBoard
 	{
 		this.isP1 = !isP1;
 	}
+	
+	public int getPlayer1Score()
+	{
+		return pits.get(6).getStones();
+	}
+	
+	public int getPlayer2Score()
+	{
+		return pits.get(13).getStones();
+	}
+	
 	/**
 	 * Helper method that returns the pit across from the given pit
 	 * @param pitInd The index of the given pit
@@ -204,17 +174,6 @@ public class MancalaBoard
 	{
 		return pits.get(2*6 - pitInd);
 	}
-	
-//	/**
-//	 * Gets the DrawableStyle
-//	 * @return the DrawableStyle
-//	 */
-//	public DrawableStyle getDrawableStyle()
-//	{
-//		if(ds == null)
-//			return null;
-//		return ds;
-//	}
 	
 	/**
 	 * Gets the pits
