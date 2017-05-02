@@ -14,9 +14,10 @@ public class MancalaBoard
 	private int stoneCount;
 	private boolean isP1;
 	
-	private DrawableStyle ds;
+	//private DrawableStyle ds;
 	
 	private ArrayList<Pit> pits;
+	private ArrayList<Pit> oldMovePits;
 	private ArrayList<ChangeListener> clist;
 
 	final static int PIT_COUNT = 14;
@@ -38,6 +39,7 @@ public class MancalaBoard
 		}
 		this.clist = new ArrayList<ChangeListener>();
 		this.isP1 = true; //Starts the game with player 1
+		this.oldMovePits = pits; //Initial copy of pits for undo function
 	}
 	
 	/**
@@ -55,20 +57,21 @@ public class MancalaBoard
 				pits.add(new Pit(stoneCount));
 		}
 		this.clist = new ArrayList<ChangeListener>();
-		this.ds = null;
+		//this.ds = null;
 		this.isP1 = true; //Starts the game with player 1
+		this.oldMovePits = pits; //Initial copy of pits for undo function
 	}
 	
-	/**
-	 * Constructs a MancalaBoard with starting stones and a DrawableStyle
-	 * @param stones The starting amount of stones
-	 * @param ds The starting DrawableStyle
-	 */
-	public MancalaBoard(int stones, DrawableStyle ds)
-	{
-		this(stones);
-		this.ds = ds;
-	}
+//	/**
+//	 * Constructs a MancalaBoard with starting stones and a DrawableStyle
+//	 * @param stones The starting amount of stones
+//	 * @param ds The starting DrawableStyle
+//	 */
+//	public MancalaBoard(int stones, DrawableStyle ds)
+//	{
+//		this(stones);
+//		this.ds = ds;
+//	}
 	
 	/**
 	 * Sets the new starting stone count, effectively restarting the game
@@ -88,6 +91,7 @@ public class MancalaBoard
 				pits.get(i).setStones(stones);
 			}
 		}
+		this.oldMovePits = pits;
 	}
 	
 	/**
@@ -99,34 +103,34 @@ public class MancalaBoard
 		return stoneCount;
 	}
 	
-	/**
-	 * Gets the name of the style being used
-	 * @return the style name
-	 */
-	public String getStyle()
-	{	
-		if(ds == null)
-			return null;
-		return ds.getStyleName();
-	}
+//	/**
+//	 * Gets the name of the style being used
+//	 * @return the style name
+//	 */
+//	public String getStyle()
+//	{	
+//		if(ds == null)
+//			return null;
+//		return ds.getStyleName();
+//	}
 	
-	/**
-	 * Sets the board's style
-	 * @param ds
-	 */
-	public void setStyle(DrawableStyle ds)
-	{
-		this.ds = ds;
-	}
+//	/**
+//	 * Sets the board's style
+//	 * @param ds
+//	 */
+//	public void setStyle(DrawableStyle ds)
+//	{
+//		this.ds = ds;
+//	}
 	
-	/**
-	 * Draws the MancalaBoard using the current DrawableStyle
-	 * @param g2 Graphics2D
-	 */
-	public void draw(Graphics2D g2)
-	{
-		ds.draw(g2);
-	}
+//	/**
+//	 * Draws the MancalaBoard using the current DrawableStyle
+//	 * @param g2 Graphics2D
+//	 */
+//	public void draw(Graphics2D g2)
+//	{
+//		ds.draw(g2);
+//	}
 	
 	/**
 	 * Attaches change listener
@@ -143,6 +147,7 @@ public class MancalaBoard
 	 */
 	public void mancalaMove(int pitInd)
 	{
+		this.oldMovePits = pits; //Saves copy of pits
 		Pit startPit = pits.get(pitInd);
 		int startPitScore = startPit.getStones();
 		startPit.setEmpty();
@@ -176,6 +181,14 @@ public class MancalaBoard
 	}
 	
 	/**
+	 * Undo a move by replacing the current pits with the old version
+	 */
+	public void mancalaUndo()
+	{
+		this.pits = oldMovePits; //Replaces current pits with the old version
+	}
+	
+	/**
 	 * Changes the current player
 	 */
 	public void changePlayer()
@@ -191,6 +204,17 @@ public class MancalaBoard
 	{
 		return pits.get(2*6 - pitInd);
 	}
+	
+//	/**
+//	 * Gets the DrawableStyle
+//	 * @return the DrawableStyle
+//	 */
+//	public DrawableStyle getDrawableStyle()
+//	{
+//		if(ds == null)
+//			return null;
+//		return ds;
+//	}
 	
 	/**
 	 * Gets the pits

@@ -1,7 +1,8 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -10,11 +11,16 @@ import java.util.*;
 
 public class MancalaFrame extends JFrame
 {
+	private static final int FRAME_WIDTH = 1600;
+	private static final int FRAME_HEIGHT = 900;
+	
 	public MancalaFrame()
 	{
 		setLayout(new BorderLayout());
+		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
-		MancalaBoard mb = new MancalaBoard();
+		MancalaBoard mb = new MancalaBoard(0);
+		MancalaPanel mp = new MancalaPanel(mb);
 
 		JPanel mancalaButtons = new JPanel();
 		
@@ -32,8 +38,8 @@ public class MancalaFrame extends JFrame
 		String[] styleChoice = { "Simple", "Fancy" };
 		JComboBox styles = new JComboBox(styleChoice);
 		styles.setToolTipText("<html>Changes the look of the mancala board</html>");
-		if(mb.getStyle() != null)
-			styles.setSelectedItem(mb.getStyle());
+		if(mp.getStyle() != null)
+			styles.setSelectedItem(mp.getStyle());
 
 		Integer[] stoneChoice = { 3, 4 };
 		JComboBox stones = new JComboBox(stoneChoice);
@@ -56,24 +62,6 @@ public class MancalaFrame extends JFrame
 		settingPanel.add(stones);
 		settingPanel.add(closeButton);
 		settingPanel.add(cancelButton);
-		
-		//Style TEST
-		styles.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				System.out.println(styles.getSelectedItem());
-			}
-		});
-
-		//Stone TEST
-		stones.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				System.out.println(stones.getSelectedItem());
-			}
-		});
 
 		//Setting Frame
 		JFrame settingFrame = new JFrame();
@@ -92,11 +80,11 @@ public class MancalaFrame extends JFrame
 				
 				if(style_select.equals("Simple"))
 				{
-					mb.setStyle(new SimpleStyle());
+					mp.setStyle(new SimpleStyle());
 				}
-				else if(style_select.equals("Fancy"));
+				else if(style_select.equals("Fancy"))
 				{
-					mb.setStyle(new FancyStyle());
+					mp.setStyle(new FancyStyle());
 				}
 				
 				if(stone_count != mb.getStoneCount())
@@ -104,6 +92,7 @@ public class MancalaFrame extends JFrame
 					mb.setStoneCount(stone_count);
 				}
 				
+				repaint();
 				settingFrame.dispose();
 			}
 		});
@@ -134,6 +123,15 @@ public class MancalaFrame extends JFrame
 				undoButton.setEnabled(true);
 			}
 		});
+		
+		//
+		mp.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent event)
+			{
+				System.out.println(event.getX() + " | " + event.getY());
+			}
+		});
 
 		//Undoes player's move
 		undoButton.addActionListener(new ActionListener()
@@ -141,6 +139,8 @@ public class MancalaFrame extends JFrame
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("Undo");
+				mb.mancalaUndo();
+				mp.repaint();
 				undoButton.setEnabled(false); //Player cannot make multiple undos in a row
 			}
 		});
@@ -159,6 +159,9 @@ public class MancalaFrame extends JFrame
 		mancalaButtons.add(undoButton);
 		mancalaButtons.add(settingsButton);
 		
+		//JLabel mancalaLabel = new MancalaLabel(mb);
+		
+		add(mp, BorderLayout.CENTER);
 		add(mancalaButtons, BorderLayout.SOUTH);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
