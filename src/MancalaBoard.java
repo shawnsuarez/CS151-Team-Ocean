@@ -13,9 +13,7 @@ public class MancalaBoard
 {
 	private int stoneCount;
 	private boolean isP1;
-	
-	//private DrawableStyle ds;
-	
+
 	private ArrayList<Pit> pits;
 	private ArrayList<Pit> oldMovePits;
 	private ArrayList<ChangeListener> clist;
@@ -111,10 +109,11 @@ public class MancalaBoard
 		int startPitScore = startPit.getStones();
 		startPit.setEmpty();
 		
-		int currentInd = pitInd+1;
+		int currentInd = pitInd+1; //The index after the starting pit.
 		for(int i = startPitScore; i > 0; i--)
 		{
 			//System.out.println(currentInd + " | " + pits.get(currentInd).isEmpty() + " | " + i);
+			//If the last pit is empty, take the stones from the pit across it.
 			if(i == 1 && pits.get(currentInd).isEmpty() && currentInd != 6 && currentInd != 13)
 			{
 				Pit acrossPit = getAcross(currentInd);

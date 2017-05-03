@@ -13,6 +13,8 @@ public class MancalaFrame extends JFrame
 {
 	private static final int FRAME_WIDTH = 1600;
 	private static final int FRAME_HEIGHT = 900;
+	private static final int MAX_UNDO = 3;
+	private int undoCount = MAX_UNDO;
 	
 	public MancalaFrame()
 	{
@@ -76,6 +78,8 @@ public class MancalaFrame extends JFrame
 		JFrame settingFrame = new JFrame();
 		settingFrame.setSize(200, 150);
 		settingFrame.add(settingPanel);
+		settingFrame.setLocationRelativeTo(this);
+		settingFrame.setResizable(false);
 		settingFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		//Settings Close Button - applies any changed settings
@@ -120,6 +124,7 @@ public class MancalaFrame extends JFrame
 			public void actionPerformed(ActionEvent e)
 			{
 				System.out.println("End Turn");
+				undoCount = MAX_UNDO;
 				mb.changePlayer();
 				mancalaTextPanel.repaint();
 			}
@@ -130,7 +135,8 @@ public class MancalaFrame extends JFrame
 		{
 			public void stateChanged(ChangeEvent event)
 			{
-				undoButton.setEnabled(true);
+				if(undoCount > 0)
+					undoButton.setEnabled(true);
 			}
 		});
 		
@@ -151,6 +157,7 @@ public class MancalaFrame extends JFrame
 				System.out.println("Undo");
 				mb.mancalaUndo();
 				mp.repaint();
+				undoCount--;
 				undoButton.setEnabled(false); //Player cannot make multiple undos in a row
 			}
 		});
