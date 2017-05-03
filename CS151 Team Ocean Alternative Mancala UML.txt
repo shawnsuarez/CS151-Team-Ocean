@@ -1,0 +1,130 @@
+MancalaTest <<Class>>
+	+void main /* MancalaFrame constructor */
+===============================================================================
+EllipseBoard extends DesignBoard <<Class>>
+	+EllipseBoard
+		super()
+		DesignPitInterface[]
+		DesignPitInterface[][]
+===============================================================================
+DesignPitInterface <<Interface>>
+	+void setStone(int stones)
+	+int getStone()
+	+void draw(Graphics2D g2)
+	+int getX()
+	+int getY()
+	+int getWidth()
+	+int getHeight()
+	+boolean contains(Point2D p)
+===============================================================================
+DesignBoardInterface<<Interface>>
+	+int getWidth()
+	+int getHeight()
+	+DesignPitInterface[] getMancala()
+	+DesignPitInterface[][] getPit()
+	+void pitCreated(DataModel model)
+	+void draw(Graphics2D g2)
+===============================================================================
+EllipsePit extends DesignPit <<Class>>
+		/* public static final int stone_width, height */
+	+EllipsePit(int x, y, w, h)
+		super(new Rectangle2D.Double(int x, y, w, h)
+	+void draw(Graphics2D g2) /* @Overrides */
+		super.draw(g2)
+===============================================================================
+RectangleBoard extends DesignBoard <<Class>>
+	+RectangleBoard
+		super();
+		DesignPitInterface[]
+		DesignPitInterface[][]
+	+void draw(Graphics2D g2)
+		super.draw(g2)
+===============================================================================
+RectanglePit extends DesignPit <<Class>>
+		/* public static final int stone_width, height */
+	+RectanglePit(x, y, w, h)
+		super(new Rectangle2D.Double(int x, y, w, h)
+	+void draw(Graphics2D g2) /* @Overrides */
+		super.draw(g2)
+===============================================================================
+DesignPit implements DesignPitInterface
+		/* private int, Shape */
+	+DesignPit(Shape s)
+	+void setStone(int stones) /* @Overrides */
+	+int getStone() /* @Overrides */
+	+int getX() /* @Overrides */
+	+int getY() /* @Overrides */
+	+int getWidth() /* @Overrides */
+	+int getHeight() /* @Overrides */
+	+void draw(Graphics2D g2) /* @Overrides */
+	+boolean contains(Point2D p) /* @Overrides */
+	+void drawString(Graphics, Rectangle, String, Font)
+===============================================================================
+DesignBoard implements DesignBoardInterface <<abstract>>
+		/* public static final int manc_width, height, pit_width height, GAP */
+		/* private DesignBoardInterface[] mancalaDesign */
+		/* private DesignBoardInterface[][] pitDesign */
+		/* private int selectPit */
+	+DesignBoard()
+	+int getWidth() /* @Overrides */
+	+int getHeight() /* @Overrides */
+	+DesignPitInterface[] getMancala() /* @Overrides */
+	+DesignBoardInterface[][] getPit() /* @Overrides */
+	+void pitCreated(DataModel model) /* @Overrides */
+	+DesignBoardInterface getPit(int player, int pit)
+	+DesignBoardInterface getMancala(int player)
+	+int getSelectedPit()
+	+void draw(Graphics2D g2) /* @Overrides */
+===============================================================================
+DataModel <<Class>>
+		/* public static enum gameStatus */
+	WIP (Work In Progress)
+===============================================================================
+MancalaFrame extends JFrame <<Class>>
+		/* actionListener, actionPerformed, attach, stateChanged, --- */
+		/* DataModel, MancalaPanel, --- */
+		/* JPanel, JLabel, JTextField, JButton, JScrollPane, --- */
+	WIP
+===============================================================================
+MancalaPanel extends JPanel implements ChangeListener <<Class>>
+		/* MouseAdapter, mouseClicked, paintComponent, stateChanged, --- */
+		/* DataModel, DesignBoardInterface, --- */
+	WIP
+===============================================================================
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
