@@ -26,7 +26,8 @@ public class MancalaFrame extends JFrame
 
 		//North Text Panel
 		JLabel mancalaTextLabel = new JLabel();
-		mancalaTextLabel.setText("Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score());
+		mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
+				+ "<br>Current Player: " + mb.getCurrentPlayer() + "</html>");
 		JPanel mancalaTextPanel = new JPanel();
 		mancalaTextLabel.setLayout(new BorderLayout());
 		mancalaTextPanel.add(mancalaTextLabel, BorderLayout.CENTER);
@@ -123,10 +124,10 @@ public class MancalaFrame extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				System.out.println("End Turn");
 				undoCount = MAX_UNDO;
 				mb.changePlayer();
-				mancalaTextPanel.repaint();
+				mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
+					+ "<br>Current Player: " + mb.getCurrentPlayer() + "</html>");
 			}
 		});
 		
@@ -140,7 +141,7 @@ public class MancalaFrame extends JFrame
 			}
 		});
 		
-		//
+		//The main board view
 		mp.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent event)

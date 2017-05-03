@@ -104,6 +104,9 @@ public class MancalaBoard
 	 */
 	public void mancalaMove(int pitInd)
 	{
+		if(pits.get(pitInd).isEmpty())
+			return;
+		
 		this.oldMovePits = pits; //Saves copy of pits
 		Pit startPit = pits.get(pitInd);
 		int startPitScore = startPit.getStones();
@@ -154,11 +157,30 @@ public class MancalaBoard
 		this.isP1 = !isP1;
 	}
 	
+	/**
+	 * Gets the current player
+	 * @return The current player
+	 */
+	public String getCurrentPlayer()
+	{
+		if(isP1)
+			return "Player 1";
+		return "Player 2";
+	}
+	
+	/**
+	 * Gets Player 1's score
+	 * @return Player 1's score
+	 */
 	public int getPlayer1Score()
 	{
 		return pits.get(6).getStones();
 	}
 	
+	/**
+	 * Gets Player 2's score
+	 * @return Player 2's score
+	 */
 	public int getPlayer2Score()
 	{
 		return pits.get(13).getStones();

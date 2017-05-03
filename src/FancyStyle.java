@@ -21,7 +21,7 @@ public class FancyStyle implements DrawableStyle
 	 */
 	public void drawUpperPits(Graphics2D g2, ArrayList<Pit> pits)
 	{
-		for(int i = 12; i > 6; i++)
+		for(int i = 12; i > 6; i--)
 		{
 			
 		}
