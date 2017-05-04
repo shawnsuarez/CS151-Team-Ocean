@@ -38,6 +38,8 @@ public class FancyStyle implements DrawableStyle
 	{
 		Rectangle2D.Double mancalaBody = new Rectangle2D.Double(TOP_X, TOP_Y, BOARD_WIDTH, BOARD_HEIGHT);
 		g2.draw(mancalaBody);
+		g2.setColor(new Color(96, 66, 4));
+		g2.fill(mancalaBody);
 	}
 	
 	/**
@@ -58,8 +60,8 @@ public class FancyStyle implements DrawableStyle
 
 			for(int j = pits.get(i).getStones(); j > 0; j--)
 			{
-				int randX = rand.nextInt(PIT_WIDTH - STONE_SIZE);
-				int randY = rand.nextInt(PIT_HEIGHT - STONE_SIZE);
+				int randX = rand.nextInt(PIT_WIDTH - 70) + 20;
+				int randY = rand.nextInt(PIT_HEIGHT - 70) + 20;
 				g2.setColor(Color.BLACK);
 				
 				Ellipse2D.Double elliStone = new Ellipse2D.Double(randX + pitX, randY + UPPER_Y_START, STONE_SIZE, STONE_SIZE);
@@ -89,8 +91,8 @@ public class FancyStyle implements DrawableStyle
 
 			for(int j = pits.get(i).getStones(); j > 0; j--)
 			{
-				int randX = rand.nextInt(PIT_WIDTH - STONE_SIZE);
-				int randY = rand.nextInt(PIT_HEIGHT - STONE_SIZE);
+				int randX = rand.nextInt(PIT_WIDTH - 70) + 20;
+				int randY = rand.nextInt(PIT_HEIGHT - 70) + 20;
 				g2.setColor(Color.BLACK);
 				
 				Ellipse2D.Double elliStone = new Ellipse2D.Double(randX + pitX, randY + LOWER_Y_START, STONE_SIZE, STONE_SIZE);
@@ -122,8 +124,8 @@ public class FancyStyle implements DrawableStyle
 		
 		for(int i = player1.getStones(); i > 0; i--)
 		{
-			int randX = rand.nextInt(SCORE_P_WIDTH - STONE_SIZE);
-			int randY = rand.nextInt(SCORE_P_HEIGHT - STONE_SIZE);
+			int randX = rand.nextInt(SCORE_P_WIDTH - 70) + 20;
+			int randY = rand.nextInt(SCORE_P_HEIGHT - 70) + 20;
 			g2.setColor(Color.BLACK);
 			
 			Ellipse2D.Double elliStone = new Ellipse2D.Double(randX + SCORE_P_X + SCORE_P_SPACING, randY + SCORE_P_Y, STONE_SIZE, STONE_SIZE);

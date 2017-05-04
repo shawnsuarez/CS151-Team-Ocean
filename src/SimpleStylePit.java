@@ -48,6 +48,8 @@ public class SimpleStylePit implements StylePit
 		g2.setColor(Color.BLACK);
 		Rectangle2D.Double pit = new Rectangle2D.Double(x, y, width, height);
 		g2.draw(pit);
+		g2.setColor(new Color(239, 216, 170));
+		g2.fill(pit);
 	}
 	
 	/**

@@ -35,6 +35,8 @@ public class SimpleStyle implements DrawableStyle
 	{
 		Rectangle2D.Double mancalaBody = new Rectangle2D.Double(TOP_X, TOP_Y, BOARD_WIDTH, BOARD_HEIGHT);
 		g2.draw(mancalaBody);
+		g2.setColor(new Color(96, 66, 4));
+		g2.fill(mancalaBody);
 	}
 	
 	/**

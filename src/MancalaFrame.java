@@ -16,11 +16,9 @@ import java.util.*;
  */
 public class MancalaFrame extends JFrame
 {
-	private static final int FRAME_WIDTH = 1600;
-	private static final int FRAME_HEIGHT = 900;
-	private static final int MAX_UNDO = 3;
+	private static final int FRAME_WIDTH = 1400;
+	private static final int FRAME_HEIGHT = 800;
 	
-	private int undoCount = MAX_UNDO;
 	private boolean isClickable; //Determines if the player's clicks will be registered
 	
 	/**
@@ -37,7 +35,7 @@ public class MancalaFrame extends JFrame
 		//North Text Panel
 		JLabel mancalaTextLabel = new JLabel();
 		mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
-			+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + undoCount+ "</html>");
+			+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + mb.getUndoCount() + mb.getStringHasExtraTurn() + "</html>");
 		JPanel mancalaTextPanel = new JPanel();
 		mancalaTextLabel.setLayout(new BorderLayout());
 		mancalaTextPanel.add(mancalaTextLabel, BorderLayout.CENTER);
@@ -113,14 +111,9 @@ public class MancalaFrame extends JFrame
 				if(stone_count != mb.getStoneCount())
 				{
 					mb.setStoneCount(stone_count);
-					undoCount = MAX_UNDO;
 					isClickable = true;
-					if(!mb.isP1())
-					{
-						mb.changePlayer();
-						mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "<strong>Player 2 Score: " + mb.getPlayer2Score()
-							+ "</stong><br>Current Player: " + mb.getCurrentPlayer() + "</html>");
-					}
+					mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
+						+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + mb.getUndoCount() + mb.getStringHasExtraTurn() + "</html>");
 					undoButton.setEnabled(false);
 					endTurnButton.setEnabled(false);
 				}
@@ -144,10 +137,9 @@ public class MancalaFrame extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				undoCount = MAX_UNDO;
-				mb.changePlayer();
-				mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "<strong>Player 2 Score: " + mb.getPlayer2Score()
-					+ "</stong><br>Current Player: " + mb.getCurrentPlayer() + "</html>");
+				mb.mancalaEnd();
+				mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
+					+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + mb.getUndoCount() + mb.getStringHasExtraTurn() + "</html>");
 				isClickable = true;
 				undoButton.setEnabled(false);
 				endTurnButton.setEnabled(false);
@@ -159,7 +151,7 @@ public class MancalaFrame extends JFrame
 		{
 			public void stateChanged(ChangeEvent event)
 			{
-				if(undoCount > 0)
+				if(mb.getUndoCount() > 0)
 					undoButton.setEnabled(true);
 				endTurnButton.setEnabled(true);
 			}
@@ -180,10 +172,13 @@ public class MancalaFrame extends JFrame
 						for(int i = 0; i < 6; i++)
 						{
 							StylePit current = pitViews.get(i);
-							if(current.contains(point))
+							if(current.contains(point) && !mb.isPitEmpty(current.getPitIndex()))
 							{
 								mb.mancalaMove(current.getPitIndex());
-								isClickable = false;
+								if(mb.getHasExtraTurn())
+									isClickable = true;
+								else
+									isClickable = false;
 								repaint();
 								break;
 							}
@@ -194,15 +189,20 @@ public class MancalaFrame extends JFrame
 						for(int i = 7; i < 13; i++)
 						{
 							StylePit current = pitViews.get(i);
-							if(current.contains(point))
+							if(current.contains(point) && !mb.isPitEmpty(current.getPitIndex()))
 							{
 								mb.mancalaMove(current.getPitIndex());
-								isClickable = false;
+								if(mb.getHasExtraTurn())
+									isClickable = true;
+								else
+									isClickable = false;
 								repaint();
 								break;
 							}
 						}
 					}
+					mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
+						+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + mb.getUndoCount() + mb.getStringHasExtraTurn() + "</html>");
 				}
 			}
 		});
@@ -214,10 +214,9 @@ public class MancalaFrame extends JFrame
 			{
 				mb.mancalaUndo();
 				repaint();
-				undoCount--;
 				isClickable = true;
 				mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
-					+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + undoCount+ "</html>");
+					+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + mb.getUndoCount() + "</html>");
 				undoButton.setEnabled(false); //Player cannot make multiple undos in a row
 				endTurnButton.setEnabled(false); //Player must make a turn
 			}

@@ -12,14 +12,16 @@ import java.util.*;
 public class MancalaBoard
 {
 	private int stoneCount;
+	private int undoCount;
 	private boolean isP1;
+	private boolean hasExtraTurn;
 
 	private ArrayList<Pit> pits;
-	private ArrayList<Pit> oldMovePits;
 	private int[] oldMoveScore;
 	private ArrayList<ChangeListener> clist;
-
-	final static int PIT_COUNT = 14;
+	
+	private static final int MAX_UNDO = 3;
+	private static final int PIT_COUNT = 14;
 	
 	/**
 	 * Constructs a MancalaBoard with the starting stones
@@ -39,6 +41,8 @@ public class MancalaBoard
 		}
 		this.clist = new ArrayList<ChangeListener>();
 		this.isP1 = true; //Starts the game with player 1
+		this.hasExtraTurn = false;
+		this.undoCount = MAX_UNDO;
 		saveToOldPits(); //Initial copy of pits for undo function
 	}
 	
@@ -59,6 +63,8 @@ public class MancalaBoard
 		}
 		this.clist = new ArrayList<ChangeListener>();
 		this.isP1 = true; //Starts the game with player 1
+		this.hasExtraTurn = false;
+		this.undoCount = MAX_UNDO;
 		saveToOldPits(); //Initial copy of pits for undo function
 	}
 	
@@ -80,6 +86,9 @@ public class MancalaBoard
 				pits.get(i).setStones(stones);
 			}
 		}
+		this.isP1 = true; //Starts the game with player 1
+		this.hasExtraTurn = false;
+		this.undoCount = MAX_UNDO;
 		saveToOldPits();
 	}
 	
@@ -137,6 +146,14 @@ public class MancalaBoard
 					acrossPit.setEmpty();
 				}
 			}
+			else if(i == 1 && (currentInd == 6 || currentInd == 13))
+			{
+				this.hasExtraTurn = true;
+			}
+			else
+			{
+				this.hasExtraTurn = false;
+			}
 			pits.get(currentInd).addStones(1);
 			currentInd++;
 		}
@@ -156,6 +173,35 @@ public class MancalaBoard
 		{
 			pits.get(i).setStones(oldMoveScore[i]);
 		}
+		undoCount--;
+	}
+	
+	/**
+	 * Gets the amount of undos left
+	 * @return The undo count
+	 */
+	public int getUndoCount()
+	{
+		return this.undoCount;
+	}
+	
+	/**
+	 * Checks if the player has an extra turn
+	 * @return True/ False
+	 */
+	public boolean getHasExtraTurn()
+	{
+		return this.hasExtraTurn;
+	}
+	
+	/**
+	 * Resets undoCount to max and changes player
+	 */
+	public void mancalaEnd()
+	{
+		this.undoCount = MAX_UNDO;
+		this.hasExtraTurn = false;
+		this.isP1 = !isP1;
 	}
 	
 	/**
@@ -167,14 +213,6 @@ public class MancalaBoard
 		{
 			oldMoveScore[i] = pits.get(i).getStones();
 		}
-	}
-	
-	/**
-	 * Changes the current player
-	 */
-	public void changePlayer()
-	{
-		this.isP1 = !isP1;
 	}
 	
 	/**
@@ -232,6 +270,27 @@ public class MancalaBoard
 	public ArrayList<Pit> getPits()
 	{
 		return pits;
+	}
+	
+	/**
+	 * Checks if the pit at the given index is empty
+	 * @param pitInd The index of the pit to be checked
+	 * @return True/False isEmpty
+	 */
+	public boolean isPitEmpty(int pitInd)
+	{
+		return pits.get(pitInd).isEmpty();
+	}
+	
+	/**
+	 * Returns the string of hasExtraTurn
+	 * @return The sting of hasExtraTurn
+	 */
+	public String getStringHasExtraTurn()
+	{
+		if(hasExtraTurn)
+			return " EXTRA TURN!!!";
+		return "";
 	}
 	
 	/**
