@@ -16,7 +16,7 @@ public class MancalaPanel extends JPanel
 	/**
 	 * Constructs the MancalaPanel with a reference to the Model
 	 * Also creates
-	 * @param mb
+	 * @param mb The given MancalaBoard
 	 */
 	public MancalaPanel(MancalaBoard mb)
 	{
@@ -55,7 +55,7 @@ public class MancalaPanel extends JPanel
 	}
 	
 	/**
-	 * Getst the name of the current strategy
+	 * Gets the name of the current Drawable strategy name
 	 * @return The strategy name
 	 */
 	public String getStyleName()

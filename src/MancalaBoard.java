@@ -16,18 +16,20 @@ public class MancalaBoard
 
 	private ArrayList<Pit> pits;
 	private ArrayList<Pit> oldMovePits;
+	private int[] oldMoveScore;
 	private ArrayList<ChangeListener> clist;
 
 	final static int PIT_COUNT = 14;
 	
 	/**
 	 * Constructs a MancalaBoard with the starting stones
-	 * @param stones the starting amount of stones in each pit
+	 * @param stones The starting amount of stones in each pit
 	 */
 	public MancalaBoard(int stones)
 	{
 		this.stoneCount = stones;
 		this.pits = new ArrayList<Pit>(PIT_COUNT);
+		this.oldMoveScore = new int[PIT_COUNT];
 		for(int i = 0; i < PIT_COUNT ; i++)
 		{
 			if(i == 6 || i == 13)
@@ -37,7 +39,7 @@ public class MancalaBoard
 		}
 		this.clist = new ArrayList<ChangeListener>();
 		this.isP1 = true; //Starts the game with player 1
-		this.oldMovePits = pits; //Initial copy of pits for undo function
+		saveToOldPits(); //Initial copy of pits for undo function
 	}
 	
 	/**
@@ -47,6 +49,7 @@ public class MancalaBoard
 	{
 		this.stoneCount = 0;
 		this.pits = new ArrayList<Pit>(PIT_COUNT);
+		this.oldMoveScore = new int[PIT_COUNT];
 		for(int i = 0; i < PIT_COUNT ; i++)
 		{
 			if(i == 6 || i == 13)
@@ -56,12 +59,12 @@ public class MancalaBoard
 		}
 		this.clist = new ArrayList<ChangeListener>();
 		this.isP1 = true; //Starts the game with player 1
-		this.oldMovePits = pits; //Initial copy of pits for undo function
+		saveToOldPits(); //Initial copy of pits for undo function
 	}
 	
 	/**
 	 * Sets the new starting stone count, effectively restarting the game
-	 * @param stones the new starting stone count
+	 * @param stones The new starting stone count
 	 */
 	public void setStoneCount(int stones)
 	{
@@ -70,19 +73,19 @@ public class MancalaBoard
 		{
 			if(i == 6 || i == 13)
 			{
-				pits.get(i).setStones(0);
+				pits.get(i).setEmpty();;
 			}
 			else
 			{
 				pits.get(i).setStones(stones);
 			}
 		}
-		this.oldMovePits = pits;
+		saveToOldPits();
 	}
 	
 	/**
 	 * Gets the MancalaBoard's starting stone count
-	 * @return the starting stone count
+	 * @return The starting stone count
 	 */
 	public int getStoneCount()
 	{
@@ -91,7 +94,7 @@ public class MancalaBoard
 	
 	/**
 	 * Attaches change listener
-	 * @param c
+	 * @param c The change listener to be added
 	 */
 	public void addChangeListener(ChangeListener c)
 	{
@@ -104,10 +107,10 @@ public class MancalaBoard
 	 */
 	public void mancalaMove(int pitInd)
 	{
-		if(pits.get(pitInd).isEmpty())
+		if(pits.get(pitInd).isEmpty() || pits.get(pitInd).isPlayerPit())
 			return;
 		
-		this.oldMovePits = pits; //Saves copy of pits
+		saveToOldPits(); //Saves copy of pits
 		Pit startPit = pits.get(pitInd);
 		int startPitScore = startPit.getStones();
 		startPit.setEmpty();
@@ -115,7 +118,10 @@ public class MancalaBoard
 		int currentInd = pitInd+1; //The index after the starting pit.
 		for(int i = startPitScore; i > 0; i--)
 		{
-			//System.out.println(currentInd + " | " + pits.get(currentInd).isEmpty() + " | " + i);
+			if(currentInd > 13)
+			{
+				currentInd = 0;
+			}
 			//If the last pit is empty, take the stones from the pit across it.
 			if(i == 1 && pits.get(currentInd).isEmpty() && currentInd != 6 && currentInd != 13)
 			{
@@ -146,7 +152,21 @@ public class MancalaBoard
 	 */
 	public void mancalaUndo()
 	{
-		this.pits = oldMovePits; //Replaces current pits with the old version
+		for(int i = 0; i < PIT_COUNT; i++)
+		{
+			pits.get(i).setStones(oldMoveScore[i]);
+		}
+	}
+	
+	/**
+	 * Saves the current pits as previous moves.
+	 */
+	public void saveToOldPits()
+	{
+		for(int i = 0; i < PIT_COUNT; i++)
+		{
+			oldMoveScore[i] = pits.get(i).getStones();
+		}
 	}
 	
 	/**
@@ -155,6 +175,15 @@ public class MancalaBoard
 	public void changePlayer()
 	{
 		this.isP1 = !isP1;
+	}
+	
+	/**
+	 * Checks if the current player is Player 1
+	 * @return True/ False
+	 */
+	public boolean isP1()
+	{
+		return isP1;
 	}
 	
 	/**
@@ -198,10 +227,23 @@ public class MancalaBoard
 	
 	/**
 	 * Gets the pits
-	 * @return the pits
+	 * @return The pits
 	 */
 	public ArrayList<Pit> getPits()
 	{
 		return pits;
+	}
+	
+	/**
+	 * Helper method that prints the current score
+	 */
+	public void printScore()
+	{
+		String score = "";
+		for(Pit p : pits)
+		{
+			score += p.getStones() + " | ";
+		}
+		System.out.println(score);
 	}
 }

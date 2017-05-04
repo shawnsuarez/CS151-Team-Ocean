@@ -51,6 +51,10 @@ public class Pit
 	public void setStones(int stones)
 	{
 		this.stones = stones;
+		if(stones > 0)
+			this.isEmpty = false;
+		else
+			this.isEmpty = true;
 	}
 	
 	/**
@@ -64,7 +68,7 @@ public class Pit
 	
 	/**
 	 * Checks if the pit is empty
-	 * @return isEmpty
+	 * @return True/ False isEmpty
 	 */
 	public boolean isEmpty()
 	{

@@ -1,6 +1,11 @@
 import java.awt.*;
 import java.util.*;
 
+/**
+ * DrawableStyle interface
+ * @author Team Ocean - Shawn Darrel Suarez
+ *
+ */
 public interface DrawableStyle
 {
 	final int BOARD_WIDTH = 1366;
@@ -32,5 +37,6 @@ public interface DrawableStyle
 	void drawLowerPits(Graphics2D g2, ArrayList<Pit> pits);
 	void drawUpperPits(Graphics2D g2, ArrayList<Pit> pits);
 	void drawScorePits(Graphics2D g2, ArrayList<Pit> pits);
+	ArrayList<? extends StylePit> getStylePits();
 	String getStyleName();
 }

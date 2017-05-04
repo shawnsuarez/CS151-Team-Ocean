@@ -9,16 +9,26 @@ import javax.swing.event.ChangeListener;
 
 import java.util.*;
 
+/**
+ * MancalaFrame
+ * @author Team Ocean
+ *
+ */
 public class MancalaFrame extends JFrame
 {
 	private static final int FRAME_WIDTH = 1600;
 	private static final int FRAME_HEIGHT = 900;
 	private static final int MAX_UNDO = 3;
-	private int undoCount = MAX_UNDO;
 	
+	private int undoCount = MAX_UNDO;
+	private boolean isClickable; //Determines if the player's clicks will be registered
+	
+	/**
+	 * Constructs and runs the Mancala Game
+	 */
 	public MancalaFrame()
 	{
-		setLayout(new BorderLayout());
+		this.setLayout(new BorderLayout());
 		this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		
 		MancalaBoard mb = new MancalaBoard(0);
@@ -27,7 +37,7 @@ public class MancalaFrame extends JFrame
 		//North Text Panel
 		JLabel mancalaTextLabel = new JLabel();
 		mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
-				+ "<br>Current Player: " + mb.getCurrentPlayer() + "</html>");
+			+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + undoCount+ "</html>");
 		JPanel mancalaTextPanel = new JPanel();
 		mancalaTextLabel.setLayout(new BorderLayout());
 		mancalaTextPanel.add(mancalaTextLabel, BorderLayout.CENTER);
@@ -49,7 +59,7 @@ public class MancalaFrame extends JFrame
 		//Creates Combo Boxes for settings
 		String[] styleChoice = { "Simple", "Fancy" };
 		JComboBox styles = new JComboBox(styleChoice);
-		styles.setToolTipText("<html>Changes the look of the mancala board</html>");
+		styles.setToolTipText("<html>Changes the look of the mancala board: <br>-Simple: Simply Square<br> -Fancy: Circles</html>");
 		if(mp.getStyle() != null)
 			styles.setSelectedItem(mp.getStyle());
 
@@ -103,6 +113,16 @@ public class MancalaFrame extends JFrame
 				if(stone_count != mb.getStoneCount())
 				{
 					mb.setStoneCount(stone_count);
+					undoCount = MAX_UNDO;
+					isClickable = true;
+					if(!mb.isP1())
+					{
+						mb.changePlayer();
+						mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "<strong>Player 2 Score: " + mb.getPlayer2Score()
+							+ "</stong><br>Current Player: " + mb.getCurrentPlayer() + "</html>");
+					}
+					undoButton.setEnabled(false);
+					endTurnButton.setEnabled(false);
 				}
 				
 				repaint();
@@ -126,8 +146,11 @@ public class MancalaFrame extends JFrame
 			{
 				undoCount = MAX_UNDO;
 				mb.changePlayer();
-				mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
-					+ "<br>Current Player: " + mb.getCurrentPlayer() + "</html>");
+				mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "<strong>Player 2 Score: " + mb.getPlayer2Score()
+					+ "</stong><br>Current Player: " + mb.getCurrentPlayer() + "</html>");
+				isClickable = true;
+				undoButton.setEnabled(false);
+				endTurnButton.setEnabled(false);
 			}
 		});
 		
@@ -138,15 +161,49 @@ public class MancalaFrame extends JFrame
 			{
 				if(undoCount > 0)
 					undoButton.setEnabled(true);
+				endTurnButton.setEnabled(true);
 			}
 		});
 		
-		//The main board view
+		//The main board view listener
 		mp.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent event)
 			{
-				System.out.println(event.getX() + " | " + event.getY());
+				Point point = event.getPoint();
+				
+				if(mp.getStyle() != null)
+				{
+					ArrayList<? extends StylePit> pitViews = mp.getStyle().getStylePits();
+					if(mb.isP1() && isClickable)
+					{
+						for(int i = 0; i < 6; i++)
+						{
+							StylePit current = pitViews.get(i);
+							if(current.contains(point))
+							{
+								mb.mancalaMove(current.getPitIndex());
+								isClickable = false;
+								repaint();
+								break;
+							}
+						}
+					}
+					else if(!mb.isP1() && isClickable)
+					{
+						for(int i = 7; i < 13; i++)
+						{
+							StylePit current = pitViews.get(i);
+							if(current.contains(point))
+							{
+								mb.mancalaMove(current.getPitIndex());
+								isClickable = false;
+								repaint();
+								break;
+							}
+						}
+					}
+				}
 			}
 		});
 
@@ -155,11 +212,14 @@ public class MancalaFrame extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				System.out.println("Undo");
 				mb.mancalaUndo();
-				mp.repaint();
+				repaint();
 				undoCount--;
+				isClickable = true;
+				mancalaTextLabel.setText("<html>Player 1 Score: " + mb.getPlayer1Score() + " | " + "Player 2 Score: " + mb.getPlayer2Score()
+					+ "<br>Current Player: " + mb.getCurrentPlayer() +  " | " + "Undos Left: "  + undoCount+ "</html>");
 				undoButton.setEnabled(false); //Player cannot make multiple undos in a row
+				endTurnButton.setEnabled(false); //Player must make a turn
 			}
 		});
 
@@ -177,19 +237,19 @@ public class MancalaFrame extends JFrame
 		mancalaButtons.add(undoButton);
 		mancalaButtons.add(settingsButton);
 		
-		//JLabel mancalaLabel = new MancalaLabel(mb);
 		
 		add(mancalaTextPanel, BorderLayout.NORTH);
 		add(mp, BorderLayout.CENTER);
 		add(mancalaButtons, BorderLayout.SOUTH);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//pack();
 		setVisible(true);
 		
 		//Initial game startup
 		settingFrame.setVisible(true);
 		cancelButton.setEnabled(false); 
 		undoButton.setEnabled(false);
+		endTurnButton.setEnabled(false);
+		isClickable = true;
 	}
 }
